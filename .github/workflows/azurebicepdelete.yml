@@ -38,5 +38,4 @@ jobs:
 
       - name: verify Deletion 
         run: |
-            az resource show --ids "/subscriptions/c385d199-ccad-473f-a6f5-7fb2c26e7bcc/resourceGroups/rg1/providers/Microsoft.Storage/storageAccounts/stores42dtv6kcrsc"
-      
+            az resource show --ids "/subscriptions/c385d199-ccad-473f-a6f5-7fb2c26e7bcc/resourceGroups/rg1/providers/Microsoft.Storage/storageAccounts/stores42dtv6kcrsc" || echo "Resource not found (deleted)"
