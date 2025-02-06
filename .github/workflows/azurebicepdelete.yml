@@ -37,8 +37,8 @@ jobs:
       - name: Azure bicep delete
         working-directory: '${{github.workspace}}/'
         run: |
-            az resource delete --ids "/subscriptions/c385d199-ccad-473f-a6f5-7fb2c26e7bcc/resourceGroups/rg1/providers/Microsoft.Storage/storageAccounts/storers42dtv6kcrsc"
+            az resource delete --ids "/subscriptions/c385d199-ccad-473f-a6f5-7fb2c26e7bcc/resourceGroups/rg1/providers/Microsoft.Storage/storageAccounts/strrs42dtv6kcrsc"
 
       - name: verify Deletion 
         run: |
-            az resource show --ids "/subscriptions/c385d199-ccad-473f-a6f5-7fb2c26e7bcc/resourceGroups/rg1/providers/Microsoft.Storage/storageAccounts/storers42dtv6kcrsc" || echo "Resource not found (deleted)"
+            az resource show --ids "/subscriptions/c385d199-ccad-473f-a6f5-7fb2c26e7bcc/resourceGroups/rg1/providers/Microsoft.Storage/storageAccounts/strrs42dtv6kcrsc" || echo "Resource not found (deleted)"
