@@ -25,6 +25,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
+      - name: Setup Azure CLI
+        uses: pietrobolcato/install-azure-cli-action@v1.0.1
+        
       - name: Azure Login
         uses: Azure/login@v2.2.0
         with:
@@ -45,6 +48,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
+      - name: Setup Azure CLI
+        uses: pietrobolcato/install-azure-cli-action@v1.0.1
+        
       - name: Azure Login
         uses: Azure/login@v2.2.0
         with:
