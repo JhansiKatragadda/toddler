@@ -1,0 +1,60 @@
+name: Delete All Resources
+
+on:
+  push: 
+      branches:
+         -main
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      resource_group:
+        description: 'Name of the Resource Group'
+        required: true
+        default: 'rg1'
+
+jobs:
+  delete_resources:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Azure CLI
+        uses: pietrobolcato/install-azure-cli-action@v1.0.1
+        
+      - name: Azure Login
+        uses: Azure/login@v2.2.0
+        with:
+          creds: ${{ secrets.AZURE_SPN_CREDENTIAL }}
+
+      - name: List and Delete All Resources
+        run: |
+          RESOURCE_GROUP="${{ github.event.inputs.resource_group }}"
+
+          # List all resources in the resource group and delete them one by one
+          echo "Fetching resources from Resource Group: $RESOURCE_GROUP"
+          
+          # Get the list of all resources in the resource group
+          RESOURCE_LIST=$(az resource list --resource-group $RESOURCE_GROUP --query "[].id" -o tsv)
+
+          # Loop through the resource list and delete each resource
+          for RESOURCE_ID in $RESOURCE_LIST; do
+            echo "Deleting resource: $RESOURCE_ID"
+            
+            # Delete the resource
+            az resource delete --ids "$RESOURCE_ID"
+          done
+
+      - name: Verify Deletion
+        run: |
+          RESOURCE_GROUP="${{ github.event.inputs.resource_group }}"
+
+          # List all resources again to verify deletion
+          RESOURCE_LIST=$(az resource list --resource-group $RESOURCE_GROUP --query "[].id" -o tsv)
+
+          if [ -z "$RESOURCE_LIST" ]; then
+            echo "All resources in $RESOURCE_GROUP have been deleted."
+          else
+            echo "Some resources were not deleted. Remaining resources:"
+            echo "$RESOURCE_LIST"
+          fi
