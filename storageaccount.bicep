@@ -1,9 +1,7 @@
 param location string = resourceGroup().location
 
-var storagename = '${uniqueString(resourceGroup().id)}'
-
 resource exampleStorage 'Microsoft.Storage/storageAccounts@2023-05-01' = {
-   name: storagename
+   name: storageAccountName
    location : location
    sku: {
      name: 'Standard_LRS'
