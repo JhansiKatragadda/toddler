@@ -1,0 +1,62 @@
+name: azure bicep delete
+
+on:
+  push:
+    branches:
+      -main
+      
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      resource_group:
+        description: 'Name of the Resource Group'
+        required: true
+        default: 'rg1'
+      resource_type:
+        description: 'Microsoft.Storage/storageAccounts'
+        required: true
+      resource_name:
+        description: 'Name of the Resource to Delete'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Azure CLI
+        uses: pietrobolcato/install-azure-cli-action@v1.0.1
+        
+      - name: Azure Login
+        uses: Azure/login@v2.2.0
+        with:
+          creds: ${{ secrets.AZURE_SPN_CREDENTIAL }}
+
+      - name: Delete Specific Resource
+        run: |
+          # Fetching inputs from the workflow_dispatch
+          RESOURCE_GROUP="${{ github.event.inputs.resource_group }}"
+          RESOURCE_TYPE="${{ github.event.inputs.resource_type }}"
+          RESOURCE_NAME="${{ github.event.inputs.resource_name }}"
+
+          # Construct the resource ID
+          RESOURCE_ID="/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${RESOURCE_GROUP}/providers/${RESOURCE_TYPE}/${RESOURCE_NAME}"
+
+          echo "Deleting resource: $RESOURCE_ID"
+          
+          # Delete the resource
+          az resource delete --ids "$RESOURCE_ID"
+
+      - name: Verify Deletion
+        run: |
+          RESOURCE_GROUP="${{ github.event.inputs.resource_group }}"
+          RESOURCE_TYPE="${{ github.event.inputs.resource_type }}"
+          RESOURCE_NAME="${{ github.event.inputs.resource_name }}"
+
+          # Construct the resource ID
+          RESOURCE_ID="/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${RESOURCE_GROUP}/providers/${RESOURCE_TYPE}/${RESOURCE_NAME}"
+
+          # Verify the deletion by attempting to fetch the resource
+          az resource show --ids "$RESOURCE_ID" || echo "Resource not found (deleted)"
