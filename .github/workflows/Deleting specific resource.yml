@@ -42,7 +42,7 @@ jobs:
           RESOURCE_NAME="${{ github.event.inputs.resource_name }}"
 
           # Construct the resource ID
-          RESOURCE_ID="/subscriptions/${{ secrets.AZURE_SPN_CREDENTIAL.subscriptionId }}/resourceGroups/${RESOURCE_GROUP}/providers/${RESOURCE_TYPE}/${RESOURCE_NAME}"
+          RESOURCE_ID="/subscriptions/c385d199-ccad-473f-a6f5-7fb2c26e7bcc/resourceGroups/${RESOURCE_GROUP}/providers/${RESOURCE_TYPE}/${RESOURCE_NAME}"
 
           echo "Deleting resource: $RESOURCE_ID"
           
